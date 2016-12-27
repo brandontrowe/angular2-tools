@@ -11,21 +11,6 @@ export class ScrollPastDirective {
 
     constructor(public el: ElementRef) {}
 
-    debounce(func: () => void, wait: number = 0, immediate: boolean = false) {
-        let timeout;
-        return function() {
-            let context = this, args = arguments;
-            let later = () => {
-                timeout = null;
-                if (!immediate) func.apply(context, args);
-            };
-            let callNow = immediate && !timeout;
-            clearTimeout(timeout);
-            timeout = setTimeout(later, wait);
-            if (callNow) func.apply(context, args);
-        };
-    }
-
     stick() {
         let classesArr = this.el.nativeElement.getAttribute('class').split(' ');
         if(!_.includes(classesArr, this.scrollPastClass)){
@@ -43,7 +28,7 @@ export class ScrollPastDirective {
     }
 
     track($event) {
-        let scroll = this.debounce(() => {
+        let scroll = _.debounce(() => {
             if(this.el.nativeElement.offsetTop <= window.scrollY) {
                 this.stick();
             } else {
